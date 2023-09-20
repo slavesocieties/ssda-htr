@@ -1,7 +1,6 @@
 from PIL import Image
 import numpy as np
 from find_pixels import *
-import cv2
 
 
 # Constants
@@ -13,7 +12,7 @@ def gray_and_rotate(block):
 
     Parameters
     ----------
-    block : Image, required
+    block : Image
         a block of text from the image
 
     Returns
