@@ -1,12 +1,9 @@
 import os
-import timeit
-
-import PIL
 from PIL import Image, ImageOps
 from deslant_img import *
 
 
-def data_segmentation(data, crop_pixels, file_name, image_file, block_id, coords = []):
+def data_segmentation(data, crop_pixels, file_name, image_file, start_id, coords = []):
     """Function to crop input image by lines and output cropped images as specified by pixel boundaries
     The resulting images will be saved to disk in the segmented directory
 
@@ -20,8 +17,8 @@ def data_segmentation(data, crop_pixels, file_name, image_file, block_id, coords
         name of the root file
     image_file : Image
         the gray-scale version of the image file object to be cropped        
-    block_id : int
-        id of the current text block
+    start_id : int
+        id of the current starting line
     coords : list
         coordinates of block in original image
 
@@ -37,7 +34,6 @@ def data_segmentation(data, crop_pixels, file_name, image_file, block_id, coords
     left = 0
     right = data.shape[1]
     bottom = 0
-    id = 0 #for name generation
     index = 0
 
     count = 0
@@ -70,19 +66,16 @@ def data_segmentation(data, crop_pixels, file_name, image_file, block_id, coords
         tmp_img = deslant_img(np.array(tmp_img))
         tmp_img = Image.fromarray(tmp_img.img)
 
+        idx = ''
+        if start_id < 10:
+            idx = '0'+str(start_id)
+        else:
+            idx = str(start_id)
 
-        if id < 10:
-            idx = '0'+str(id)
-        else:
-            idx = str(id)
-        if block_id < 10:
-            block_idx = '0'+str(block_id)
-        else:
-            block_idx = str(block_id)
-        tmp_img.save("segmented\\"+file_name+"\\"+file_name+'_'+block_idx + '_' +idx+'.jpg') #save output image
+        tmp_img.save("segmented\\"+file_name+"\\"+file_name+'-'+idx+'.jpg') #save output image
         segment_coords.append([left + coords[0], top + coords[1], right + coords[0], bottom + coords[1]])
         count += 1
-        id+=1
+        start_id +=1
 
         index+=1
     # image_file = image_file.crop((top, bottom, right, data.shape[0]))
@@ -92,17 +85,15 @@ def data_segmentation(data, crop_pixels, file_name, image_file, block_id, coords
     image_file = Image.fromarray(image_file.img)
 
     
-    if id < 10:
-        idx = '0'+str(id)
+    idx = ''
+    if start_id < 10:
+        idx = '0'+str(start_id)
     else:
-        idx = str(id)
-    if block_id < 10:
-        block_idx = '0'+str(block_id)
-    else:
-        block_idx = str(block_id)
+        idx = str(start_id)
     if image_file.size[1] > 9:
-        image_file.save("segmented\\" + file_name + "\\" + file_name + '_' +block_idx + '_' + idx + '.jpg')  # save output image
+        image_file.save("segmented\\" + file_name + "\\" + file_name + '-' + idx + '.jpg')  # save output image
         segment_coords.append([left + coords[0], bottom + coords[1], right + coords[0], data.shape[0] + coords[1]])
         count += 1
+        start_id += 1
     
-    return count, segment_coords
+    return count, segment_coords, start_id
