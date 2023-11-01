@@ -138,7 +138,6 @@ def find_rotate_angle(data, compress_height, compress_width):
         tmp_img = img.rotate(i, fillcolor=1)
         series = get_pixel_histogram(np.asarray(tmp_img), compress_height, compress_width)
         std = np.std(series)
-        print(i, std)
         if std > maxStd:
             maxStd = std
             maxAngle = i
