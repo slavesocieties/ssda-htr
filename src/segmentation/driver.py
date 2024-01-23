@@ -118,7 +118,3 @@ def driver(filename):
     os.rmdir(f'./segmented/{filename}')
     print("Done segmentation and upload")
     return count
-
-for file in os.scandir(f'./test'):
-    filename = file.name[:-4]
-    driver(filename)
