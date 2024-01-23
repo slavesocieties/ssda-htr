@@ -40,11 +40,11 @@ def data_segmentation(data, crop_pixels, file_name, image_file, start_id, coords
 
     segment_coords = []
 
-    if not os.path.exists("segmented"):
-        os.mkdir("segmented")
+    if not os.path.exists("./segmented"):
+        os.mkdir("./segmented")
 
-    if not os.path.exists("segmented\\"+file_name):
-        os.mkdir("segmented\\"+file_name)
+    if not os.path.exists("./segmented/"+file_name):
+        os.mkdir("./segmented/"+file_name)
 
     while index < len(crop_pixels): #iteratively crop the image with pixel boundaries
         top = bottom
@@ -55,7 +55,7 @@ def data_segmentation(data, crop_pixels, file_name, image_file, start_id, coords
         while bottom - top < 10:
             index += 1
             if index >= len(crop_pixels):
-                return count, segment_coords
+                return count, segment_coords, start_id
             # left = bottom
             top = bottom
             bottom = crop_pixels[index]
@@ -72,7 +72,7 @@ def data_segmentation(data, crop_pixels, file_name, image_file, start_id, coords
         else:
             idx = str(start_id)
 
-        tmp_img.save("segmented\\"+file_name+"\\"+file_name+'-'+idx+'.jpg') #save output image
+        tmp_img.save("./segmented/"+file_name+"/"+file_name+'-'+idx+'.jpg') #save output image
         segment_coords.append([left + coords[0], top + coords[1], right + coords[0], bottom + coords[1]])
         count += 1
         start_id +=1
@@ -81,8 +81,8 @@ def data_segmentation(data, crop_pixels, file_name, image_file, start_id, coords
     # image_file = image_file.crop((top, bottom, right, data.shape[0]))
     image_file = image_file.crop((left, bottom, right, data.shape[0]))
 
-    image_file = deslant_img(np.array(image_file))
-    image_file = Image.fromarray(image_file.img)
+    # image_file = deslant_img(np.array(image_file))
+    # image_file = Image.fromarray(image_file.img)
 
     
     idx = ''
@@ -91,7 +91,7 @@ def data_segmentation(data, crop_pixels, file_name, image_file, start_id, coords
     else:
         idx = str(start_id)
     if image_file.size[1] > 9:
-        image_file.save("segmented\\" + file_name + "\\" + file_name + '-' + idx + '.jpg')  # save output image
+        image_file.save("./segmented/" + file_name + "/" + file_name + '-' + idx + '.jpg')  # save output image
         segment_coords.append([left + coords[0], bottom + coords[1], right + coords[0], data.shape[0] + coords[1]])
         count += 1
         start_id += 1

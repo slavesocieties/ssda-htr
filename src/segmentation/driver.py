@@ -1,5 +1,5 @@
 import os
-from PIL import Image
+from PIL import Image, ImageDraw
 import numpy as np
 from pool_image import block_image
 from layout import layout_analyze
@@ -73,7 +73,7 @@ def driver(filename):
     entry_coords : list
         a list of coordinates of blocks that have noise blocks filtered
     """
-    path_to_image = f'./{filename}'
+    path_to_image = f'./test/{filename}.jpg'
     preprocess(path_to_image)
 
     orig_img = Image.open(path_to_image)
@@ -92,23 +92,34 @@ def driver(filename):
     counts = []
     start_line = 1
 
+    tmp = rotated_img.convert('RGB')
+    draw = ImageDraw.Draw(tmp, "RGBA")
+
     for entry_id, block in enumerate(entry_blocks):
-        data, image_file, orig_image = gray_and_rotate(block)        
+        data, image_file, orig_image = gray_and_rotate(block)
+
         crop_pixels = find_pixels(data, 5000)
         data = np.array(orig_image)
-        count, segment_coords, start_line = data_segmentation(data, crop_pixels, filename[:-4], image_file, start_line, entry_coords[entry_id]) #cropping image and output
+        count, segment_coords, start_line = data_segmentation(data, crop_pixels, filename, image_file, start_line, entry_coords[entry_id]) #cropping image and output
+        for coord in segment_coords:
+            draw.rectangle((coord[0], coord[1], coord[2], coord[3]), outline= 'blue', fill=(0, 255, 0, 30))
         all_coords.append(segment_coords)
         counts.append(count)
-
+    # tmp.show()
     count = 0
-    for file in os.scandir(f'.\\segmented\\{filename[:-4]}'):
-        with open(file.path, "rb") as f:
-            img_data = f.read()
-            headers = {"Content-Type":"image/jpeg"}
-            requests.put("https://zoqdygikb2.execute-api.us-east-1.amazonaws.com/v1/ssda-htr-training/" + file.name.replace("_temp",""), data=img_data, headers=headers)
-            count += 1
-        os.remove(file.path)
+    tmp.save(f'./result2/{filename}.png')
+    # for file in os.scandir(f'./segmented/{filename}'):
+        # with open(file.path, "rb") as f:
+        #     img_data = f.read()
+            # headers = {"Content-Type":"image/jpeg"}
+            # requests.put("https://zoqdygikb2.execute-api.us-east-1.amazonaws.com/v1/ssda-htr-training/" + file.name , data=img_data, headers=headers)
+            # count += 1
+        # os.remove(file.path)
     # need to remove folder
-    os.rmdir(f'.\\segmented\\{filename[:-4]}')
+    # os.rmdir(f'./segmented/{filename}')
     print("Done segmentation and upload")
     return count
+
+for file in os.scandir(f'./test'):
+    filename = file.name[:-4]
+    driver(filename)

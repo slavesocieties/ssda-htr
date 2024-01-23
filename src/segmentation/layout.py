@@ -239,7 +239,7 @@ def GCD(x, y):
        x, y = y, x % y
     return abs(x)
 
-def layout_analyze(data, orig_img, save_path = ""):
+def layout_analyze(data, orig_img, save_path = "hello"):
     """Function to compute the layout bounding blocks that contain texts within an image
 
     Parameters
@@ -303,7 +303,8 @@ def layout_analyze(data, orig_img, save_path = ""):
             if space[1]-space[0] > 50 and crop.size[0] > 50: # filter out garbage crops
                 draw.rectangle((indices_horizontal[i][0], space[0], indices_horizontal[i][1], space[1]), outline= 'blue', fill=(0, 255, 0, 30))
                 crops_vertical.append(crop.crop((0, space[0], crop.size[0], space[1])))
-                crops_orig_vertical.append(crops_orig_horizontal[i].crop((0, space[0], crop.size[0], space[1])))
+                # crops_orig_vertical.append(crops_orig_horizontal[i].crop((0, space[0], crop.size[0], space[1])))
+                crops_orig_vertical.append(img.crop((indices_horizontal[i][0], space[0], indices_horizontal[i][1], space[1])))
                 coordinates.append((indices_horizontal[i][0], space[0], indices_horizontal[i][1], space[1]))
                 
     if save_path != "":
