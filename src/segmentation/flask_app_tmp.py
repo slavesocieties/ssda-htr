@@ -13,7 +13,7 @@ worker_status = dict()
 def segmentatation_post():
     global worker_status
     data = request.json
-    id = str(uuid.uuid1())
+    id = uuid.uuid1()
     thread = threading.Thread(target=thread_worker_segmentation, args=(data,id))
     thread.start()
     worker_status[id] = {
