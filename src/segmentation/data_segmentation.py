@@ -81,8 +81,8 @@ def data_segmentation(data, crop_pixels, file_name, image_file, start_id, coords
     # image_file = image_file.crop((top, bottom, right, data.shape[0]))
     image_file = image_file.crop((left, bottom, right, data.shape[0]))
 
-    # image_file = deslant_img(np.array(image_file))
-    # image_file = Image.fromarray(image_file.img)
+    image_file = deslant_img(np.array(image_file))
+    image_file = Image.fromarray(image_file.img)
 
     
     idx = ''

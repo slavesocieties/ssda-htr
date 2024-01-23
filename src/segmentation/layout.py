@@ -239,7 +239,7 @@ def GCD(x, y):
        x, y = y, x % y
     return abs(x)
 
-def layout_analyze(data, orig_img, save_path = "hello"):
+def layout_analyze(data, orig_img, save_path = ""):
     """Function to compute the layout bounding blocks that contain texts within an image
 
     Parameters

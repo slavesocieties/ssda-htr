@@ -73,7 +73,7 @@ def driver(filename):
     entry_coords : list
         a list of coordinates of blocks that have noise blocks filtered
     """
-    path_to_image = f'./test/{filename}.jpg'
+    path_to_image = f'./{filename}'
     preprocess(path_to_image)
 
     orig_img = Image.open(path_to_image)
@@ -105,18 +105,17 @@ def driver(filename):
             draw.rectangle((coord[0], coord[1], coord[2], coord[3]), outline= 'blue', fill=(0, 255, 0, 30))
         all_coords.append(segment_coords)
         counts.append(count)
-    # tmp.show()
+
     count = 0
-    tmp.save(f'./result2/{filename}.png')
-    # for file in os.scandir(f'./segmented/{filename}'):
-        # with open(file.path, "rb") as f:
-        #     img_data = f.read()
-            # headers = {"Content-Type":"image/jpeg"}
-            # requests.put("https://zoqdygikb2.execute-api.us-east-1.amazonaws.com/v1/ssda-htr-training/" + file.name , data=img_data, headers=headers)
-            # count += 1
-        # os.remove(file.path)
+    for file in os.scandir(f'./segmented/{filename}'):
+        with open(file.path, "rb") as f:
+            img_data = f.read()
+            headers = {"Content-Type":"image/jpeg"}
+            requests.put("https://zoqdygikb2.execute-api.us-east-1.amazonaws.com/v1/ssda-htr-training/" + file.name , data=img_data, headers=headers)
+            count += 1
+        os.remove(file.path)
     # need to remove folder
-    # os.rmdir(f'./segmented/{filename}')
+    os.rmdir(f'./segmented/{filename}')
     print("Done segmentation and upload")
     return count
 
