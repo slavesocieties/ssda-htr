@@ -13,7 +13,7 @@ worker_status = dict()
 def segmentatation_post():
     global worker_status
     data = request.json
-    id = uuid.uuid1()
+    id = str(uuid.uuid1())
     thread = threading.Thread(target=thread_worker_segmentation, args=(data,id))
     thread.start()
     worker_status[id] = {
@@ -24,7 +24,7 @@ def segmentatation_post():
     }
     resp = app.response_class(
         response=json.dumps(worker_status[id]),
-        status=200,
+        status=201,
         mimetype='application/json'
     )
     return resp
@@ -32,19 +32,19 @@ def segmentatation_post():
 @app.route('/segmentation', methods = ['GET'])
 def segmentatation_get():
     global worker_status
-    data = request.json
-    if 'uuid' not in data or data['uuid'] not in worker_status:
+    uuid = request.args.get('uuid', default = '*', type = str)
+    if uuid not in worker_status:
         resp = app.response_class(
             response=json.dumps({
                 'status': 'error',
                 'message': 'uuid not found'
             }),
-            status=200,
+            status=404,
             mimetype='application/json'
         )
     else:
         resp = app.response_class(
-            response=json.dumps(worker_status[data['uuid']]),
+            response=json.dumps(worker_status[uuid]),
             status=200,
             mimetype='application/json'
         )

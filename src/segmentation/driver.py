@@ -73,7 +73,7 @@ def driver(filename):
     entry_coords : list
         a list of coordinates of blocks that have noise blocks filtered
     """
-    path_to_image = f'./{filename}'
+    path_to_image = f'./{filename}.jpg'
     preprocess(path_to_image)
 
     orig_img = Image.open(path_to_image)
@@ -86,7 +86,7 @@ def driver(filename):
     entry_blocks, entry_coords = filter_blocks(blocks, coordinates)
 
     if entry_blocks == None:
-        return False
+        return 0
     
     all_coords = []
     counts = []
